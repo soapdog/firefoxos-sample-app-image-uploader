@@ -1,0 +1,29 @@
+{
+  "name": "Imgur Image Uploader",
+  "description": "An app to share images using the imgur service",
+  "launch_path": "/index.html",
+  "permissions": {
+      "storage": {
+        "description": "Required for storing and retrieving to do lists."
+      }
+  },
+  "activities": {
+      "share": {
+            "href": "./share.html",
+            "disposition": "inline",
+            "filters": {
+              "type": ["image/*","image/jpeg","image/png"]
+            },
+            "returnValue": true
+          }
+  },
+  "icons": {
+    "128": "/images/app_icon_128.png",
+    "60": "/images/app_icon_60.png"
+  },
+  "developer": {
+    "name": "Andre Garzia",
+    "url": "http://andregarzia.com"
+  },
+  "default_locale": "en"
+}
