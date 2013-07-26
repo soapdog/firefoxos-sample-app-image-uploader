@@ -3,24 +3,9 @@
  * User: soapdog
  */
 
-navigator.mozSetMessageHandler('activity', function(activityRequest) {
-    var option = activityRequest.source;
-
-    console.log(activityRequest);
-
-    if (option.name === "share") {
-        // Do something to handle the activity
-
-        // Send back the result
-        if (picture) {
-            activityRequest.postResult(picture);
-        } else {
-            activityRequest.postError("Unable to provide a picture");
-        }
-    }
-});
-
 function pickImageAndUpload() {
+
+    // Use the 'pick' activity to acquire an image
     var pick = new MozActivity({
         name: "pick",
         data: {
@@ -29,12 +14,12 @@ function pickImageAndUpload() {
     });
 
     pick.onsuccess = function () { 
-        // Create image and set the returned blob as the src
+        // Pick the returned image blob and upload to imgur.com
         var img = document.createElement("img");
 
         img.src = window.URL.createObjectURL(this.result.blob);
 
-        // Present that image in your app
+        // Present that image in your app, so it looks cool.
         var imagePresenter = document.querySelector("#image-presenter");
         imagePresenter.appendChild(img);
 
@@ -49,6 +34,10 @@ function pickImageAndUpload() {
     };
 }
 
+function uploadSuccess(response) {
+    document.querySelector("#")
+}
+
 document.querySelector("#upload").addEventListener("click", pickImageAndUpload);
 
-console.log("loaded");
+console.log("application loaded");

@@ -1,6 +1,6 @@
 var imgur = imgur || {};
 
-imgur.share = function(file) {
+imgur.share = function(file, inCallback) {
     // file is from a <input> tag or from Drag'n Drop
     // Is the file an image?
 
@@ -25,10 +25,12 @@ imgur.share = function(file) {
         var response = JSON.parse(xhr.responseText);
 
         if (response.success) {
-            alert("image sharing succeeded");
+            console.log("image sharing succeeded");
             console.log("url", response.data.link);
+            inCallback(null, response);
         } else {
             console.log(response);
+            inCallback(response, null);
         }
     }
     // Ok, I don't handle the errors. An exercice for the reader.

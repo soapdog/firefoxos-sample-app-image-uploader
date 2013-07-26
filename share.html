@@ -4,10 +4,42 @@
     <title>Imgur Image Uploader</title>
     <meta charset="utf8"/>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <!--
+   Gaia Building Blocks Styles
+   learn more about Gaia Building Blocks at:
+   http://buildingfirefoxos.com/building-blocks/
+   -->
+    <link href="building_blocks/util.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/fonts.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/transitions.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style/headers.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style/buttons.css" rel="stylesheet" type="text/css">
+
+    <!--
+    Tiny imgur.com wrapper
+    -->
     <script src="imgur.js"></script>
-    <script src="app.js"></script>
+
+
+    <style type="text/css">
+        #image-presenter img {
+            max-width: 80%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-     <h1>share</h1>
+<section role="region" id="todo-item-detail" data-position="right">
+    <header>
+        <h1>Share on imgur.com</h1>
+    </header>
+    <article class="content scrollable header">
+        <div id="image-presenter"></div>
+        <button class="recommend" id="upload">Pick Image and Upload</button>
+
+    </article>
+</section>
+
+<script src="share.js"></script>
 </body>
 </html>
