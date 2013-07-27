@@ -15,6 +15,9 @@
     <link href="building_blocks/style/headers.css" rel="stylesheet" type="text/css">
     <link href="building_blocks/style/buttons.css" rel="stylesheet" type="text/css">
 
+    <!-- Transitions -->
+    <link rel="stylesheet" href="building_blocks/transitions.css">
+
     <!--
     Tiny imgur.com wrapper
     -->
@@ -29,15 +32,26 @@
     </style>
 </head>
 <body>
-<section role="region" id="todo-item-detail" data-position="right">
+<section role="region" id="todo-item-detail" data-position="current">
     <header>
         <h1>Share on imgur.com</h1>
     </header>
     <article class="content scrollable header">
         <div id="image-presenter"></div>
         <button class="recommend" id="upload">Pick Image and Upload</button>
-        <div id="result"></div>
+    </article>
+</section>
 
+<section role="region" id="result" data-position="right">
+    <header>
+        <button id="back-to-main"><span class="icon icon-back">back</span></button>
+        <h1>Share on imgur.com</h1>
+    </header>
+    <article class="content scrollable header">
+        <h2 id="link"></h2>
+        <button class="recommend" id="open">Open Link</button>
+        <button class="recommend" id="email">Send Link By Emailk</button>
+        <button class="recommend" id="bookmark">Add Link To Bookmarks</button>
     </article>
 </section>
 
