@@ -1,0 +1,11 @@
+#image-presenter img {
+    max-height: 300px;
+    width: auto;
+}
+
+#image-presenter {
+    margin: auto;
+    vertical-align: middle;
+    padding: 10px;
+}
+

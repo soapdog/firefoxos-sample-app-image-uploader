@@ -71,7 +71,7 @@ function sendLinkByEmail() {
         type: "email",
         url: "mailto:?body=" + encodeURIComponent(link) + "&subject=" + encodeURIComponent(link)
     });
-    activity.onerror = function (e) {
+    activity.onerror = function() {
         alert("could not send email");
     };
 }
