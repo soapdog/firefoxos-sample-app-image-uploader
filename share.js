@@ -13,6 +13,7 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 });
 
 function uploadImage() {
+    alert("uploading");
     imgur.share(currentImage, shareCallback);
 }
 
@@ -28,7 +29,7 @@ function shareCallback(err, response) {
 
 function openLink() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    var activity = new MozActivity({
         name: "view",
         type: "url",
         url: link
@@ -37,7 +38,7 @@ function openLink() {
 
 function saveLinkToBookmarks() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    var activity = new MozActivity({
         name: "save-bookmark",
         type: "url",
         url: link
@@ -46,7 +47,7 @@ function saveLinkToBookmarks() {
 
 function sendLinkByEmail() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    var activity = new MozActivity({
         name: "new",
         type: "email",
         url: "mailto:?body=" + encodeURIComponent(link) + "&subject=" + encodeURIComponent(link)

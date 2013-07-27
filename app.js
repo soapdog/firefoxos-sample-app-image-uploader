@@ -3,6 +3,10 @@
  * User: soapdog
  *
  * todo: add connection API support
+ * todo: email sending not working
+ * todo: progress bars
+ * todo: fix activities in share.js
+ * todo: try to remove duplicate code from share.js and app.js
  */
 
 function pickImageAndUpload() {
@@ -37,6 +41,7 @@ function pickImageAndUpload() {
 }
 
 function shareCallback(err, response) {
+    console.log("callback");
     if (!err) {
         document.querySelector("#link").innerHTML = response.data.link
         document.querySelector('#result').className = 'current';
@@ -48,28 +53,35 @@ function shareCallback(err, response) {
 
 function openLink() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    console.log("link", link);
+    var activity = new MozActivity({
         name: "view",
-        type: "url",
-        url: link
+        data: {
+            type: "url",
+            url: link
+        }
     });
 }
 
 function saveLinkToBookmarks() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    var activity = new MozActivity({
         name: "save-bookmark",
-        type: "url",
-        url: link
+        data: {
+            type: "url",
+            url: link
+        }
     });
 }
 
 function sendLinkByEmail() {
     var link = document.querySelector("#link").innerHTML;
-    var activity = new mozActivity({
+    var activity = new MozActivity({
         name: "new",
-        type: "email",
-        url: "mailto:?body=" + encodeURIComponent(link) + "&subject=" + encodeURIComponent(link)
+        data: {
+            type: "email",
+            url: "mailto:?body=" + encodeURIComponent(link) + "&subject=" + encodeURIComponent(link)
+        }
     });
     activity.onerror = function() {
         alert("could not send email");
