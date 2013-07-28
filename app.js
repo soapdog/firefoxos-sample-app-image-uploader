@@ -3,12 +3,14 @@
  * User: soapdog
  *
  * todo: email sending not working
- * todo: progress bars
  * todo: fix activities in share.js
  * todo: try to remove duplicate code from share.js and app.js
  */
 
-function pickImageAndUpload() {
+var currentImage;
+
+
+function pickImage() {
 
     // Use the 'pick' activity to acquire an image
     var pick = new MozActivity({
@@ -37,24 +39,34 @@ function pickImageAndUpload() {
             return;
         }
 
-        document.querySelector("#upload").classList.add("hidden");
-        document.querySelector("#uploading").classList.remove("hidden");
-        imgur.share(this.result.blob, shareCallback);
+        document.querySelector("#pick").classList.add("hidden");
+        document.querySelector("#upload").classList.remove("hidden");
+
+        currentImage = this.result.blob;
 
 
     };
 
-    pick.onerror = function () { 
+    pick.onerror = function() {
         // If an error occurred or the user canceled the activity
         alert("Can't view the image!");
     }
 }
 
+function uploadCurrentImageToImgur() {
+    document.querySelector("#upload").classList.add("hidden");
+    document.querySelector("#pick").classList.add("hidden");
+    document.querySelector("#uploading").classList.remove("hidden");
+    imgur.share(currentImage, shareCallback);
+}
+
 function shareCallback(err, response) {
     console.log("callback from upload to imgur", response);
 
-    document.querySelector("#upload").classList.remove("hidden");
+    document.querySelector("#pick").classList.remove("hidden");
     document.querySelector("#uploading").classList.add("hidden");
+    document.querySelector("#upload").classList.add("hidden");
+
     if (!err) {
         document.querySelector("#link").innerHTML = response.data.link
         document.querySelector('#result').className = 'current';
@@ -109,9 +121,26 @@ function sendLinkByEmail() {
     };
 }
 
+// Share activity handler
+navigator.mozSetMessageHandler('activity', function(activityRequest) {
+
+    var img = document.createElement("img");
+    currentImage = activityRequest.source.data.blobs[0]
+
+    img.src = window.URL.createObjectURL(currentImage);
+
+    // Present that image in your app, so it looks cool.
+    var imagePresenter = document.querySelector("#image-presenter");
+    imagePresenter.appendChild(img);
+});
+
+
+
 
 // Main screen events
-document.querySelector("#upload").addEventListener("click", pickImageAndUpload);
+document.querySelector("#pick").addEventListener("click", pickImage);
+document.querySelector("#upload").addEventListener("click", uploadCurrentImageToImgur);
+
 
 // Succesful upload screen events
 document.querySelector("#back-to-main").addEventListener("click", function() {
@@ -121,8 +150,6 @@ document.querySelector("#back-to-main").addEventListener("click", function() {
 document.querySelector("#open").addEventListener("click", openLink);
 document.querySelector("#email").addEventListener("click", sendLinkByEmail);
 document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
-
-
 
 
 console.log("application loaded");
