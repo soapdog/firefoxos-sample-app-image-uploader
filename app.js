@@ -3,8 +3,6 @@
  * User: soapdog
  *
  * todo: email sending not working
- * todo: fix activities in share.js
- * todo: try to remove duplicate code from share.js and app.js
  */
 
 var currentImage;
