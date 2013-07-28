@@ -14,13 +14,14 @@
     <link href="building_blocks/transitions.css" rel="stylesheet" type="text/css">
     <link href="building_blocks/style/headers.css" rel="stylesheet" type="text/css">
     <link href="building_blocks/style/buttons.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style_unstable/progress_activity.css" rel="stylesheet" type="text/css">
+
 
     <!-- Transitions -->
     <link rel="stylesheet" href="building_blocks/transitions.css">
 
     <!-- our customizations css -->
     <link href="custom.css" rel="stylesheet" type="text/css">
-
 
     <!--
     Tiny imgur.com wrapper
@@ -35,7 +36,12 @@
     </header>
     <article class="content scrollable header">
         <div id="image-presenter"></div>
-        <button class="recommend" id="upload">Upload</button>
+        <button class="recommend" id="pick">Pick Image</button>
+        <button class="recommend hidden" id="upload">Upload to Imgur</button>
+        <div id="uploading" class="hidden">
+            <progress></progress>
+            <span>Uploading...</span>
+        </div>
     </article>
 </section>
 
@@ -47,7 +53,7 @@
     <article class="content scrollable header">
         <h2 id="link"></h2>
         <button class="recommend" id="open">Open Link</button>
-        <button class="recommend" id="email">Send Link By Emailk</button>
+        <button class="recommend" id="email">Send Link By Email</button>
         <button class="recommend" id="bookmark">Add Link To Bookmarks</button>
     </article>
 </section>

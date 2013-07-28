@@ -132,6 +132,12 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
     // Present that image in your app, so it looks cool.
     var imagePresenter = document.querySelector("#image-presenter");
     imagePresenter.appendChild(img);
+
+    document.querySelector("#pick").classList.add("hidden");
+    document.querySelector("#upload").classList.remove("hidden");
+
+
+
 });
 
 

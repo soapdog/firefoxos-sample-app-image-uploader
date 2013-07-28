@@ -7,13 +7,12 @@ A sample app for Firefox OS for uploading images to imgur.
 Implementation
 ==============
 
-## index.html and app.js
+## index.html, share.html and app.js
 Those files have the application that the user can launch and use the **Pick Image and Upload** button to select an
-image from some source and upload it to imgur.com
+image from some source and upload it to imgur.com. The share.html file is a copy of index.html that is loaded when the user
+uses the share activity to send an image from some app to the uploader app. We use this second file because if we use
+index.html as our activity handler page and the app is already open, it will simply switch to the app without loading the stuff.
 
-## share.html and share.js
-These files are responsible for uploading an image that was shared with an activity of type **share** such as when the
-user is on the gallery app and selects share on the viewed image.
 
 ## imgur.js
 This is a minimal imgur anonymous upload wrapper.
