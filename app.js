@@ -29,6 +29,15 @@ function pickImageAndUpload() {
         var imagePresenter = document.querySelector("#image-presenter");
         imagePresenter.appendChild(img);
 
+        // Check connection before upload.
+        var connection = window.navigator.mozConnection;
+
+        if (connection.bandwidth == 0) {
+            alert("Please connect to the internet to upload images to imgur.com");
+            return;
+        }
+
+
         imgur.share(this.result.blob, shareCallback);
 
 
@@ -46,6 +55,14 @@ function shareCallback(err, response) {
         document.querySelector("#link").innerHTML = response.data.link
         document.querySelector('#result').className = 'current';
         document.querySelector('[data-position="current"]').className = 'left';
+
+        // also add a notification
+        var notification = navigator.mozNotification.createNotification(
+            "Imgur Uploader",
+            "Image upload succeeded: " + response.data.link
+        );
+        notification.show();
+
     } else {
         alert("could not upload your image");
     }

@@ -26,7 +26,13 @@ This application was made to demonstrate the usage of webactivities. It can act 
 activity and it uses the *pick* activity to select images to be uploaded when launched as an app instead of being selected
 as an adctivity from the share menu.
 
-You can learn more about [Web Activities here](https://developer.mozilla.org/en-US/docs/WebAPI/Web_Activities)
+You can learn more about [Web Activities here](https://developer.mozilla.org/en-US/docs/WebAPI/Web_Activities).
+
+Before trying to upload the image to imgur.com we check if the user is connected using the
+[Connection API](https://developer.mozilla.org/en-US/docs/Web/API/window.navigator.connection).
+
+Upon successfully uploading an image to imgur.com, we display a notification using the
+[Notification API](https://developer.mozilla.org/en-US/docs/Web/API/notification).
 
 
 Google Summer of Code
