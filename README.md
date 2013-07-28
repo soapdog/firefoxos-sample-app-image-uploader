@@ -3,6 +3,14 @@ Imgur Image Uploader App
 
 A sample app for Firefox OS for uploading images to imgur.
 
+It can be used as a standalone app to post pictures to imgur.com as seen in:
+
+![Imgur Uploader](http://andregarzia.com/shots/uploader1.gif)
+
+Or as an activity handler for the share image activity as seen in:
+
+![Imgur Uploader](http://andregarzia.com/shots/uploader2.gif)
+
 
 Implementation
 ==============
