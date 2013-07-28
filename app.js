@@ -2,7 +2,6 @@
  * Created with JetBrains WebStorm.
  * User: soapdog
  *
- * todo: add connection API support
  * todo: email sending not working
  * todo: progress bars
  * todo: fix activities in share.js
@@ -27,6 +26,7 @@ function pickImageAndUpload() {
 
         // Present that image in your app, so it looks cool.
         var imagePresenter = document.querySelector("#image-presenter");
+        imagePresenter.innerHTML = "";
         imagePresenter.appendChild(img);
 
         // Check connection before upload.
@@ -37,7 +37,8 @@ function pickImageAndUpload() {
             return;
         }
 
-
+        document.querySelector("#upload").classList.add("hidden");
+        document.querySelector("#uploading").classList.remove("hidden");
         imgur.share(this.result.blob, shareCallback);
 
 
@@ -50,7 +51,10 @@ function pickImageAndUpload() {
 }
 
 function shareCallback(err, response) {
-    console.log("callback");
+    console.log("callback from upload to imgur", response);
+
+    document.querySelector("#upload").classList.remove("hidden");
+    document.querySelector("#uploading").classList.add("hidden");
     if (!err) {
         document.querySelector("#link").innerHTML = response.data.link
         document.querySelector('#result').className = 'current';

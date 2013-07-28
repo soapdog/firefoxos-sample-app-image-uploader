@@ -14,6 +14,8 @@
     <link href="building_blocks/transitions.css" rel="stylesheet" type="text/css">
     <link href="building_blocks/style/headers.css" rel="stylesheet" type="text/css">
     <link href="building_blocks/style/buttons.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style_unstable/progress_activity.css" rel="stylesheet" type="text/css">
+
 
     <!-- Transitions -->
     <link rel="stylesheet" href="building_blocks/transitions.css">
@@ -35,6 +37,10 @@
     <article class="content scrollable header">
         <div id="image-presenter"></div>
         <button class="recommend" id="upload">Pick Image and Upload</button>
+        <div id="uploading" class="hidden">
+            <progress></progress>
+            <span>Uploading...</span>
+        </div>
     </article>
 </section>
 
