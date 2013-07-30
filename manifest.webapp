@@ -23,8 +23,8 @@
       }
   },
   "icons": {
-    "128": "/images/app_icon_128.png",
-    "60": "/images/app_icon_60.png"
+    "128": "/icons/logo_128.png",
+    "60": "/icons/logo_60.png"
   },
   "developer": {
     "name": "Andre Garzia",
