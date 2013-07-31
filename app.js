@@ -68,7 +68,7 @@ function shareCallback(err, response) {
 
     if (!err) {
         document.getElementById("link").innerHTML = response.data.link
-        document.querySelector('#result').className = 'current';
+        document.getElementById('result').className = 'current';
         document.querySelector('[data-position="current"]').className = 'left';
 
         // also add a notification
@@ -151,7 +151,7 @@ document.getElementById("upload").addEventListener("click", uploadCurrentImageTo
 
 // Succesful upload screen events
 document.getElementById("back-to-main").addEventListener("click", function() {
-    document.querySelector('#result').className = 'right';
+    document.getElementById('result').className = 'right';
     document.querySelector('[data-position="current"]').className = 'current';
 });
 document.getElementById("open").addEventListener("click", openLink);
