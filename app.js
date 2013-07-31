@@ -184,8 +184,6 @@ function sendLinkByEmail() {
  */
 navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
-    runningAsActivityHandler = true;
-
     var img = document.createElement("img");
     currentImage = activityRequest.source.data.blobs[0]
 
