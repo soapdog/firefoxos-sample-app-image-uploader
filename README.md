@@ -23,7 +23,8 @@ index.html as our activity handler page and the app is already open, it will sim
 
 
 ## imgur.js
-This is a minimal imgur anonymous upload wrapper.
+This is a minimal imgur.com anonymous upload wrapper. The [Imgur API](http://api.imgur.com) is free to use for non-commercial
+low volume apps such as this one.
 
 
 Usage of Web APIs

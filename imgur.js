@@ -1,13 +1,30 @@
+/**
+ * Mininal Imgur API Wrapper
+ *
+ */
+
 var imgur = imgur || {};
 
+/**
+ * Uploads an image anonymously to imgur.com
+ * We pass the binary file data and a callback to be called
+ * after the upload succeeds or fail.
+ *
+ * @param file
+ * @param inCallback
+ *
+ * This code is based on the minimal uploader from:
+ *
+ *   https://hacks.mozilla.org/2011/03/the-shortest-image-uploader-ever/
+ *
+ * but this code was updated to the version 3 of the imgur API while the one
+ * in that article is version 2.
+ *
+ * More information about imgur API v3 at:
+ *
+ *   http://api.imgur.com/
+ */
 imgur.share = function(file, inCallback) {
-    // file is from a <input> tag or from Drag'n Drop
-    // Is the file an image?
-
-    //if (!file || !file.type.match(/image.*/)) return;
-
-    // It is!
-    // Let's build a FormData object
 
     var fd = new FormData();
     fd.append("image", file); // Append the file
@@ -33,7 +50,5 @@ imgur.share = function(file, inCallback) {
             inCallback(response, null);
         }
     }
-    // Ok, I don't handle the errors. An exercice for the reader.
-    // And now, we send the formdata
     xhr.send(fd);
 }

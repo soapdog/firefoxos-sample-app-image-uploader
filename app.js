@@ -1,4 +1,14 @@
 /**
+ * Imgur Image Uploader
+ *
+ * OBJECTIVE
+ * To create a standalone image uploader that is also able to be called as an activity handler by other apps.
+ *
+ * WEB APIs USED
+ * - Web Activities calling and handling
+ * - Connection API
+ * - Notification API
+ *
  * Created with JetBrains WebStorm.
  * User: soapdog
  *
@@ -6,9 +16,19 @@
  */
 
 var currentImage;
-var runningAsActivityHandler = false;
 
-
+/**
+ * This function is called by the "Pick Image" button in the main screen.
+ * It calls a "pick" web activity to fetch an image.
+ *
+ * If the pick activity succeeds, then it hides itself and displays the
+ * upload button to share the image on imgur.com
+ *
+ * More information about web activities in:
+ *
+ * https://hacks.mozilla.org/2013/01/introducing-web-activities/
+ *
+ */
 function pickImage() {
 
     // Use the 'pick' activity to acquire an image
@@ -52,6 +72,15 @@ function pickImage() {
     }
 }
 
+/**
+ * This function is called by the "upload" button on the main screen. This button
+ * is only visible if there was a successful "pick" web activity call or if the application
+ * was launched as a web activity handler for the "share" activity.
+ *
+ * This function hides the "upload" button and the "pick" button (just in case) and displays
+ * a progress spinner while the upload is happening. To upload it uses the share() call from
+ * imgur.js which accepts an image and a callback.
+ */
 function uploadCurrentImageToImgur() {
     document.querySelector("#upload").classList.add("hidden");
     document.querySelector("#pick").classList.add("hidden");
@@ -59,6 +88,18 @@ function uploadCurrentImageToImgur() {
     imgur.share(currentImage, shareCallback);
 }
 
+
+/**
+ * This function is the callback from the imgur.share() call. It receives two parameters,
+ * "err" or "response", if there was an error, the first parameter will contain the error and the second
+ * parameter will be null, if the upload succeeds, then the first parameter will be null and the second will
+ * contain the response.
+ *
+ * Upon a successful upload, this function displays a notification.
+ *
+ * @param err
+ * @param response
+ */
 function shareCallback(err, response) {
     console.log("callback from upload to imgur", response);
 
@@ -82,6 +123,21 @@ function shareCallback(err, response) {
         alert("could not upload your image");
     }
 }
+
+/**
+ * Below are some functions related to calling web activities. These are triggered by buttons
+ * that are displayed when a succesful upload is achieved.
+ *
+ * Web Activites allow your app to delegate functionality to other apps (aka pig back on other people
+ * works :-) ).
+ *
+ * You can learn more about Web Activities at:
+ *
+ * - https://hacks.mozilla.org/2013/01/introducing-web-activities/
+ * - https://developer.mozilla.org/en-US/docs/WebAPI/Web_Activities
+ *
+ */
+
 
 function openLink() {
     var link = document.querySelector("#link").innerHTML;
@@ -120,7 +176,12 @@ function sendLinkByEmail() {
     };
 }
 
-// Share activity handler
+/**
+ * This is the function responsive for handling the "share" activity call. This will be called
+ * when some other app invokes the share web activity and the user selects this app.
+ *
+ * It will pick and load the image and display the upload button.
+ */
 navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
     runningAsActivityHandler = true;
@@ -141,7 +202,9 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
 });
 
-
+/**
+ * Below is the initialization code for the app. It basically binds some buttons to their respective functions
+ */
 
 
 // Main screen events
