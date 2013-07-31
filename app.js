@@ -26,7 +26,7 @@ function pickImage() {
         img.src = window.URL.createObjectURL(this.result.blob);
 
         // Present that image in your app, so it looks cool.
-        var imagePresenter = document.querySelector("#image-presenter");
+        var imagePresenter = document.getElementById("image-presenter");
         imagePresenter.innerHTML = "";
         imagePresenter.appendChild(img);
 
@@ -38,8 +38,8 @@ function pickImage() {
             return;
         }
 
-        document.querySelector("#pick").classList.add("hidden");
-        document.querySelector("#upload").classList.remove("hidden");
+        document.getElementById("pick").classList.add("hidden");
+        document.getElementById("upload").classList.remove("hidden");
 
         currentImage = this.result.blob;
 
@@ -53,21 +53,21 @@ function pickImage() {
 }
 
 function uploadCurrentImageToImgur() {
-    document.querySelector("#upload").classList.add("hidden");
-    document.querySelector("#pick").classList.add("hidden");
-    document.querySelector("#uploading").classList.remove("hidden");
+    document.getElementById("upload").classList.add("hidden");
+    document.getElementById("pick").classList.add("hidden");
+    document.getElementById("uploading").classList.remove("hidden");
     imgur.share(currentImage, shareCallback);
 }
 
 function shareCallback(err, response) {
     console.log("callback from upload to imgur", response);
 
-    document.querySelector("#pick").classList.remove("hidden");
-    document.querySelector("#uploading").classList.add("hidden");
-    document.querySelector("#upload").classList.add("hidden");
+    document.getElementById("pick").classList.remove("hidden");
+    document.getElementById("uploading").classList.add("hidden");
+    document.getElementById("upload").classList.add("hidden");
 
     if (!err) {
-        document.querySelector("#link").innerHTML = response.data.link
+        document.getElementById("link").innerHTML = response.data.link
         document.querySelector('#result').className = 'current';
         document.querySelector('[data-position="current"]').className = 'left';
 
@@ -84,7 +84,7 @@ function shareCallback(err, response) {
 }
 
 function openLink() {
-    var link = document.querySelector("#link").innerHTML;
+    var link = document.getElementById("link").innerHTML;
     console.log("link", link);
     var activity = new MozActivity({
         name: "view",
@@ -96,7 +96,7 @@ function openLink() {
 }
 
 function saveLinkToBookmarks() {
-    var link = document.querySelector("#link").innerHTML;
+    var link = document.getElementById("link").innerHTML;
     var activity = new MozActivity({
         name: "save-bookmark",
         data: {
@@ -107,7 +107,7 @@ function saveLinkToBookmarks() {
 }
 
 function sendLinkByEmail() {
-    var link = document.querySelector("#link").innerHTML;
+    var link = document.getElementById("link").innerHTML;
     var activity = new MozActivity({
         name: "new",
         data: {
@@ -131,11 +131,11 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
     img.src = window.URL.createObjectURL(currentImage);
 
     // Present that image in your app, so it looks cool.
-    var imagePresenter = document.querySelector("#image-presenter");
+    var imagePresenter = document.getElementById("image-presenter");
     imagePresenter.appendChild(img);
 
-    document.querySelector("#pick").classList.add("hidden");
-    document.querySelector("#upload").classList.remove("hidden");
+    document.getElementById("pick").classList.add("hidden");
+    document.getElementById("upload").classList.remove("hidden");
 
 
 
@@ -145,18 +145,18 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
 
 // Main screen events
-document.querySelector("#pick").addEventListener("click", pickImage);
-document.querySelector("#upload").addEventListener("click", uploadCurrentImageToImgur);
+document.getElementById("pick").addEventListener("click", pickImage);
+document.getElementById("upload").addEventListener("click", uploadCurrentImageToImgur);
 
 
 // Succesful upload screen events
-document.querySelector("#back-to-main").addEventListener("click", function() {
+document.getElementById("back-to-main").addEventListener("click", function() {
     document.querySelector('#result').className = 'right';
     document.querySelector('[data-position="current"]').className = 'current';
 });
-document.querySelector("#open").addEventListener("click", openLink);
-document.querySelector("#email").addEventListener("click", sendLinkByEmail);
-document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
+document.getElementById("open").addEventListener("click", openLink);
+document.getElementById("email").addEventListener("click", sendLinkByEmail);
+document.getElementById("bookmark").addEventListener("click", saveLinkToBookmarks);
 
 
 console.log("application loaded");
