@@ -2,11 +2,6 @@
   "name": "Imgur Image Uploader",
   "description": "An app to share images using the imgur service",
   "launch_path": "/index.html",
-  "permissions": {
-      "storage": {
-        "description": "Required for storing and retrieving to do lists."
-      }
-  },
   "activities": {
       "share": {
             "href": "./share.html",
