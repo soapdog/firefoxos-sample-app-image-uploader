@@ -1,3 +1,4 @@
+(function(){
 /**
  * Imgur Image Uploader
  *
@@ -36,10 +37,10 @@ function pickImage() {
         name: "pick",
         data: {
             type: ["image/png", "image/jpg", "image/jpeg"]
-         }
+        }
     });
 
-    pick.onsuccess = function () { 
+    pick.onsuccess = function () {
         // Pick the returned image blob and upload to imgur.com
         var img = document.createElement("img");
 
@@ -118,10 +119,12 @@ function shareCallback(err, response) {
             "Image upload succeeded: " + response.data.link
         );
         notification.show();
+        return;
 
-    } else {
-        alert("could not upload your image");
     }
+
+    alert("could not upload your image");
+
 }
 
 /**
@@ -221,3 +224,6 @@ document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmark
 
 
 console.log("application loaded");
+
+
+}());
