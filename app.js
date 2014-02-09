@@ -91,9 +91,21 @@ function pickImage() {
  */
 function uploadCurrentImageToImgur() {
     document.querySelector("#upload").classList.add("hidden");
+    document.querySelector("#upload_user").classList.add("hidden");
     document.querySelector("#pick").classList.add("hidden");
     document.querySelector("#uploading").classList.remove("hidden");
-    imgur.share(currentImage, shareCallback);
+    imgur.share(currentImage, true, shareCallback);
+}
+
+
+function uploadCurrentImageToImgurAsTheAuthorizedUser() {
+    var token = window.localStorage.getItem("access_token");
+    document.querySelector("#upload").classList.add("hidden");
+    document.querySelector("#upload_user").classList.add("hidden");
+    document.querySelector("#pick").classList.add("hidden");
+    document.querySelector("#uploading").classList.remove("hidden");
+    imgur.setAuthorizationToken(token);
+    imgur.share(currentImage, false, shareCallback);
 }
 
 
@@ -205,6 +217,12 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
     document.querySelector("#pick").classList.add("hidden");
     document.querySelector("#upload").classList.remove("hidden");
+    if (checkIfAppIsAuthorized()) {
+        var username = window.localStorage.getItem("account_username");
+        console.log("Changing label to " + username);
+        document.querySelector("#username").innerHTML = username;
+        document.querySelector("#upload_user").classList.remove("hidden");
+    }
 
 
 
@@ -289,6 +307,8 @@ function parseTokens(url) {
 // Main screen events
 document.querySelector("#pick").addEventListener("click", pickImage);
 document.querySelector("#upload").addEventListener("click", uploadCurrentImageToImgur);
+document.querySelector("#upload_user").addEventListener("click", uploadCurrentImageToImgurAsTheAuthorizedUser);
+
 
 
 // Succesful upload screen events
@@ -315,7 +335,10 @@ document.querySelector("#email").addEventListener("click", sendLinkByEmail);
 document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
 
 
-checkIfAppIsAuthorized();
+if (checkIfAppIsAuthorized()) {
+    var username = window.localStorage.getItem("account_username");
+    document.querySelector("#status_msg").innerHTML = "Authorized as " + username;
+}
 
 console.log("application loaded");
 

@@ -2,49 +2,61 @@
 <html>
 <head>
     <title>Imgur Image Uploader</title>
-    <meta charset="utf8">
-    <meta name="viewport" content="width=device-width">
+    <meta charset="utf8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
     <!--
    Gaia Building Blocks Styles
    learn more about Gaia Building Blocks at:
    http://buildingfirefoxos.com/building-blocks/
    -->
-    <link href="building_blocks/util.css" rel="stylesheet">
-    <link href="building_blocks/fonts.css" rel="stylesheet">
-    <link href="building_blocks/transitions.css" rel="stylesheet">
-    <link href="building_blocks/style/headers.css" rel="stylesheet">
-    <link href="building_blocks/style/buttons.css" rel="stylesheet">
-    <link href="building_blocks/style_unstable/progress_activity.css" rel="stylesheet">
+    <link href="building_blocks/util.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/fonts.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/transitions.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style/headers.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style/buttons.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style_unstable/progress_activity.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/style/input_areas.css" rel="stylesheet" type="text/css">
+    <link href="building_blocks/icons/styles/action_icons.css" rel="stylesheet" type="text/css">
 
 
     <!-- Transitions -->
     <link rel="stylesheet" href="building_blocks/transitions.css">
 
     <!-- our customizations css -->
-    <link href="custom.css" rel="stylesheet">
+    <link href="custom.css" rel="stylesheet" type="text/css">
 
-
+    <!--
+    Tiny imgur.com wrapper
+    -->
+    <script src="imgur.js"></script>
 
 </head>
 <body>
 <section role="region" id="todo-item-detail" data-position="current">
     <header class="fixed">
+        <menu type="toolbar">
+            <a id="authorize-button" href="#"><span class="icon icon-user">Log in</span></a>
+        </menu>
         <h1>Share on imgur.com</h1>
     </header>
     <article class="content scrollable header">
         <div id="image-presenter"></div>
         <button class="recommend" id="pick">Pick Image</button>
-        <button class="recommend hidden" id="upload">Upload to Imgur</button>
+        <button class="recommend hidden" id="upload">Upload to Imgur Anonymously</button>
+        <button class="recommend hidden" id="upload_user">Upload as <span id="username"></span></button>
         <div id="uploading" class="hidden">
             <progress></progress>
             <span>Uploading...</span>
+        </div>
+        <div id="status">
+            <span id="status_msg">Click the button on the top right corner to authorize your user on imgur.com</span>
         </div>
     </article>
 </section>
 
 <section role="region" id="result" data-position="right">
     <header class="fixed">
-        <button id="back-to-main"><span class="icon icon-back">back</span></button>
+        <button id="back-from-result"><span class="icon icon-back">back</span></button>
         <h1>Share on imgur.com</h1>
     </header>
     <article class="content scrollable header">
@@ -54,10 +66,14 @@
         <button class="recommend" id="bookmark">Add Link To Bookmarks</button>
     </article>
 </section>
-<!--
-   Tiny imgur.com wrapper
-   -->
-<script src="imgur.js"></script>
+
+<section role="region" id="authorize" data-position="right">
+    <header class="fixed">
+        <button id="back-from-authorize"><span class="icon icon-back">back</span></button>
+        <h1>Authorize on Imgur.com</h1>
+    </header>
+    <iframe mozbrowser remote id='browser' allowfullscreen></iframe>
+</section>
 
 <script src="app.js"></script>
 </body>

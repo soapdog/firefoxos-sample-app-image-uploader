@@ -9,6 +9,10 @@ imgur.config = {
     clientId: "226dd8effca185e"
 };
 
+imgur.setAuthorizationToken = function(token) {
+    imgur.config.authToken = token;
+}
+
 /**
  * Uploads an image anonymously to imgur.com
  * We pass the binary file data and a callback to be called
@@ -28,7 +32,7 @@ imgur.config = {
  *
  *   http://api.imgur.com/
  */
-imgur.share = function(file, inCallback) {
+imgur.share = function(file, anonymously, inCallback) {
 
     var fd = new FormData();
     fd.append("image", file); // Append the file
@@ -38,7 +42,11 @@ imgur.share = function(file, inCallback) {
     // Create the XHR (Cross-Domain XHR FTW!!!)
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "https://api.imgur.com/3/image.json"); // Boooom!
-    xhr.setRequestHeader("Authorization", "Client-ID 226dd8effca185e");
+    if (imgur.config.authToken && !anonymously) {
+        xhr.setRequestHeader("Authorization", "Bearer " + imgur.config.authToken);
+    } else {
+        xhr.setRequestHeader("Authorization", "Client-ID 226dd8effca185e");
+    }
     xhr.onload = function() {
         // Big win!
         // The URL of the image is:
