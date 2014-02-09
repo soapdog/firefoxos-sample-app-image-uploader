@@ -201,3 +201,7 @@ div[role="slider"] > label.icon {
     padding: 10px;
 }
 
+#browser {
+    width: 320px;
+    height: 100%;
+}

@@ -2,6 +2,7 @@
   "name": "Imgur Image Uploader",
   "description": "An app to share images using the imgur service",
   "launch_path": "/index.html",
+  "type": "privileged",
   "activities": {
       "share": {
             "href": "./share.html",
@@ -25,5 +26,14 @@
     "name": "Andre Garzia",
     "url": "http://andregarzia.com"
   },
-  "default_locale": "en"
+  "default_locale": "en",
+  "permissions": {
+      "systemXHR": {
+        "description": "Used to send data to Foursquare API."
+      },
+      "browser": {
+        "description": "Enables authentication to Foursquare via OAuth."
+      }
+    }
+
 }

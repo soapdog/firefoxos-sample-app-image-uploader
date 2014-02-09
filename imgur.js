@@ -5,6 +5,10 @@
 
 var imgur = imgur || {};
 
+imgur.config = {
+    clientId: "226dd8effca185e"
+};
+
 /**
  * Uploads an image anonymously to imgur.com
  * We pass the binary file data and a callback to be called
@@ -52,3 +56,9 @@ imgur.share = function(file, inCallback) {
     }
     xhr.send(fd);
 }
+
+imgur.getAuthorizationURL = function() {
+    var url = "https://api.imgur.com/oauth2/authorize?client_id="+imgur.config.clientId+"&response_type=token&state=authorizing";
+
+    return url;
+};

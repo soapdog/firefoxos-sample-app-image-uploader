@@ -36,7 +36,7 @@ function pickImage() {
     var pick = new MozActivity({
         name: "pick",
         data: {
-            type: ["image/png", "image/jpg", "image/jpeg"]
+            type: ["image/jpeg", "image/png", "image/jpg"]
         }
     });
 
@@ -54,13 +54,20 @@ function pickImage() {
         // Check connection before upload.
         var connection = window.navigator.mozConnection;
 
-        if (connection.bandwidth == 0) {
+        if (connection.bandwidth === 0) {
             alert("Please connect to the internet to upload images to imgur.com");
             return;
         }
 
         document.querySelector("#pick").classList.add("hidden");
         document.querySelector("#upload").classList.remove("hidden");
+
+        if (checkIfAppIsAuthorized()) {
+            var username = window.localStorage.getItem("account_username");
+            console.log("Changing label to " + username);
+            document.querySelector("#username").innerHTML = username;
+            document.querySelector("#upload_user").classList.remove("hidden");
+        }
 
         currentImage = this.result.blob;
 
@@ -70,7 +77,7 @@ function pickImage() {
     pick.onerror = function() {
         // If an error occurred or the user canceled the activity
         alert("Can't view the image!");
-    }
+    };
 }
 
 /**
@@ -109,7 +116,7 @@ function shareCallback(err, response) {
     document.querySelector("#upload").classList.add("hidden");
 
     if (!err) {
-        document.querySelector("#link").innerHTML = response.data.link
+        document.querySelector("#link").innerHTML = response.data.link;
         document.querySelector('#result').className = 'current';
         document.querySelector('[data-position="current"]').className = 'left';
 
@@ -188,7 +195,7 @@ function sendLinkByEmail() {
 navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
     var img = document.createElement("img");
-    currentImage = activityRequest.source.data.blobs[0]
+    currentImage = activityRequest.source.data.blobs[0];
 
     img.src = window.URL.createObjectURL(currentImage);
 
@@ -203,7 +210,78 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
 });
 
+function requestAuthorization() {
+
+    var browser = document.querySelector("#browser");
+    var url = imgur.getAuthorizationURL();
+    var redirect_uri = "https://imgur.soapdog.org/authorize";
+
+    // move from main screen to authorization screen.
+    document.querySelector('#authorize').className = 'current';
+    document.querySelector('[data-position="current"]').className = 'left';
+
+    // Clear current tokens...
+
+    console.log("Clearing tokens...");
+    window.localStorage.removeItem("access_token");
+    window.localStorage.removeItem("refresh_token");
+    window.localStorage.removeItem("username");
+
+    console.log(url);
+
+    browser.setAttribute("src", url);
+
+    browser.addEventListener('mozbrowserlocationchange', function(e) {
+        console.log("Browser location change: ", e.detail);
+        if (e.detail && (e.detail.indexOf(redirect_uri) === 0)) {
+            console.log("Found tokens!");
+            console.log(e.detail);
+            var result = parseTokens(e.detail);
+            console.log(result);
+            var tokens = JSON.stringify(result);
+            console.log(tokens);
+            window.localStorage.setItem("access_token", result['access_token']);
+            window.localStorage.setItem("refresh_token", result['refresh_token']);
+            window.localStorage.setItem("account_username", result['account_username']);
+            console.log("Received a OAuth access token of: " + result['access_token']);
+            browser.setAttribute("src", "");
+
+            // Tokens received.
+
+            document.querySelector('#authorize').className = 'right';
+            document.querySelector('[data-position="current"]').className = 'current';
+        } else {
+            console.log("iframe redirected but url contained no tokens...");
+
+        }
+    });
+}
+
+function checkIfAppIsAuthorized() {
+    var username = window.localStorage.getItem("account_username");
+
+    if (username) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 /**
+ * Utility function to parse OAuth authorization token out of a URL.
+ */
+function parseTokens(url) {
+    url = url.replace('#', '&'); // <-- fix for imgur oauth thing.
+    var result = {};
+
+    url.split('&').forEach(function(parts) {
+        parts = parts.split('=');
+        result[parts[0]] = parts[1];
+    });
+    return result;
+}
+
+    /**
  * Below is the initialization code for the app. It basically binds some buttons to their respective functions
  */
 
@@ -214,14 +292,30 @@ document.querySelector("#upload").addEventListener("click", uploadCurrentImageTo
 
 
 // Succesful upload screen events
-document.querySelector("#back-to-main").addEventListener("click", function() {
-    document.querySelector('#result').className = 'right';
+document.querySelector("#back-from-authorize").addEventListener("click", function() {
+    console.log("Clicked the back button");
+    document.querySelector('#browser').className = 'right';
     document.querySelector('[data-position="current"]').className = 'current';
 });
+
+// bind back button from authorize screen
+    document.querySelector("#back-from-result").addEventListener("click", function() {
+        console.log("Clicked the back button");
+        document.querySelector('#result').className = 'right';
+        document.querySelector('[data-position="current"]').className = 'current';
+    });
+
+// Authorize user on imgur.com
+document.querySelector("#authorize-button").addEventListener("click", requestAuthorization);
+
+
+
 document.querySelector("#open").addEventListener("click", openLink);
 document.querySelector("#email").addEventListener("click", sendLinkByEmail);
 document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
 
+
+checkIfAppIsAuthorized();
 
 console.log("application loaded");
 
