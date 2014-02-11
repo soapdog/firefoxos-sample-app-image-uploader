@@ -6,12 +6,21 @@
 var imgur = imgur || {};
 
 imgur.config = {
-    clientId: "226dd8effca185e"
+    clientId: "226dd8effca185e",
+    clientSecret: "4dc33e33717e802caf31b9df3affe06d6f12b139"
 };
 
 imgur.setAuthorizationToken = function(token) {
     imgur.config.authToken = token;
-}
+};
+
+imgur.setRefreshToken = function(token) {
+    imgur.config.refreshToken = token;
+};
+
+imgur.setAccountUsername = function(username) {
+    imgur.config.username = username;
+};
 
 /**
  * Uploads an image anonymously to imgur.com
@@ -65,8 +74,43 @@ imgur.share = function(file, anonymously, inCallback) {
     xhr.send(fd);
 }
 
+imgur.refreshAccessToken = function(inCallback) {
+    var fd = new FormData();
+
+    console.log("Refreshing tokens...");
+
+    fd.append("client_id", imgur.config.clientId);
+    fd.append("client_secret", imgur.config.clientSecret);
+    fd.append("grant_type", "refresh_token");
+    fd.append("refresh_token", imgur.config.refreshToken);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://api.imgur.com/oauth2/token");
+    xhr.setRequestHeader("Authorization", "Client-ID 226dd8effca185e");
+
+    xhr.onload = function() {
+        // Big win!
+        // The URL of the image is:
+        console.log(xhr.responseText);
+        var response = JSON.parse(xhr.responseText);
+
+        if (response.access_token) {
+            console.log("Tokens Refreshed");
+            imgur.setAuthorizationToken(response.access_token);
+            imgur.setRefreshToken(response.refresh_token);
+            inCallback(null, response);
+        } else {
+            console.log("Oops! No Refresh");
+            inCallback(response, null);
+        }
+    }
+    xhr.send(fd);
+
+}
+
 imgur.getAuthorizationURL = function() {
     var url = "https://api.imgur.com/oauth2/authorize?client_id="+imgur.config.clientId+"&response_type=token&state=authorizing";
 
     return url;
 };
+

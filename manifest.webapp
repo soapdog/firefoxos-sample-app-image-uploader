@@ -5,7 +5,7 @@
   "type": "privileged",
   "activities": {
       "share": {
-            "href": "./share.html",
+            "href": "./index.html",
             "disposition": "inline",
             "filters": {
               "type": ["image/*","image/jpeg","image/png"]

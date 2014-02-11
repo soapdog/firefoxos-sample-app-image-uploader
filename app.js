@@ -13,7 +13,8 @@
  * Created with JetBrains WebStorm.
  * User: soapdog
  *
- * todo: email sending not working
+ * Todo: make the token refresh work.
+ * Obs: thinking about always refreshing...
  */
 
 var currentImage;
@@ -59,11 +60,10 @@ function pickImage() {
             return;
         }
 
-        document.querySelector("#pick").classList.add("hidden");
         document.querySelector("#upload").classList.remove("hidden");
 
         if (checkIfAppIsAuthorized()) {
-            var username = window.localStorage.getItem("account_username");
+            var username = imgur.config.username;
             console.log("Changing label to " + username);
             document.querySelector("#username").innerHTML = username;
             document.querySelector("#upload_user").classList.remove("hidden");
@@ -97,15 +97,29 @@ function uploadCurrentImageToImgur() {
     imgur.share(currentImage, true, shareCallback);
 }
 
-
+/**
+ * This function is called by the "upload as user" button on the main screen. This button
+ * is only visible if there was a successful "pick" web activity call or if the application
+ * was launched as a web activity handler for the "share" activity.
+ *
+ * This function hides the "upload" button and the "pick" button (just in case) and displays
+ * a progress spinner while the upload is happening. To upload it uses the share() call from
+ * imgur.js which accepts an image and a callback. It posts on behalf of the logged user.
+ *
+ * This button is only visible if the user has authorized the app with imgur (a.k.a. is logged in).
+ */
 function uploadCurrentImageToImgurAsTheAuthorizedUser() {
-    var token = window.localStorage.getItem("access_token");
     document.querySelector("#upload").classList.add("hidden");
     document.querySelector("#upload_user").classList.add("hidden");
     document.querySelector("#pick").classList.add("hidden");
     document.querySelector("#uploading").classList.remove("hidden");
-    imgur.setAuthorizationToken(token);
-    imgur.share(currentImage, false, shareCallback);
+
+    function shareClosure(err, tokens) {
+        saveTokens(tokens);
+        imgur.share(currentImage, false, shareCallback);
+    }
+
+    imgur.refreshAccessToken(shareClosure);
 }
 
 
@@ -228,6 +242,12 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
 });
 
+/**
+ * This is the function that requests authorization for the app to post
+ * on the behalf of the user on imgur.
+ *
+ * It uses OAuth 2.0 stuff, I wish this stuff was easier.
+ */
 function requestAuthorization() {
 
     var browser = document.querySelector("#browser");
@@ -241,30 +261,34 @@ function requestAuthorization() {
     // Clear current tokens...
 
     console.log("Clearing tokens...");
-    window.localStorage.removeItem("access_token");
-    window.localStorage.removeItem("refresh_token");
-    window.localStorage.removeItem("username");
+    window.localStorage.removeItem("tokens");
 
-    console.log(url);
+    console.log("Authorization URL:" + url);
 
     browser.setAttribute("src", url);
 
-    browser.addEventListener('mozbrowserlocationchange', function(e) {
+    browser.addEventListener('mozbrowserlocationchange', function(e) { // <--- wish this was a standard event
         console.log("Browser location change: ", e.detail);
         if (e.detail && (e.detail.indexOf(redirect_uri) === 0)) {
             console.log("Found tokens!");
             console.log(e.detail);
             var result = parseTokens(e.detail);
             console.log(result);
-            var tokens = JSON.stringify(result);
-            console.log(tokens);
-            window.localStorage.setItem("access_token", result['access_token']);
-            window.localStorage.setItem("refresh_token", result['refresh_token']);
-            window.localStorage.setItem("account_username", result['account_username']);
-            console.log("Received a OAuth access token of: " + result['access_token']);
+
+            if (result["error"]) {
+                resetTokens();
+                console.log("User denied access, removing tokens");
+            } else {
+                saveTokens(result);
+                console.log("Received a OAuth access token of: " + result['access_token']);
+                loadTokens();
+            }
+
             browser.setAttribute("src", "");
 
             // Tokens received.
+
+            checkIfLoggedIn();
 
             document.querySelector('#authorize').className = 'right';
             document.querySelector('[data-position="current"]').className = 'current';
@@ -275,10 +299,15 @@ function requestAuthorization() {
     });
 }
 
+/**
+ * This function checks if the user is authorized on imgur based on the presence of a key tokens in
+ * localStorage. This key is saved by the callback from the OAuth workflow. Check requestAuthorization().
+ * @returns {boolean}
+ */
 function checkIfAppIsAuthorized() {
-    var username = window.localStorage.getItem("account_username");
+    var tokens = window.localStorage.getItem("tokens");
 
-    if (username) {
+    if (tokens) {
         return true;
     } else {
         return false;
@@ -286,9 +315,40 @@ function checkIfAppIsAuthorized() {
 }
 
 /**
+ * Saves the given tokens to localStorage. This is used by loadTokens() later to load them back into memory
+ * @param tokens
+ */
+function saveTokens(tokens) {
+    var serialized = JSON.stringify(tokens);
+    window.localStorage.setItem("tokens", serialized);
+}
+
+/**
+ * This picks the tokens from localStorage and load them into the imgur library
+ */
+function loadTokens() {
+    var tokens = window.localStorage.getItem("tokens");
+
+    if (tokens) {
+        tokens = JSON.parse(tokens);
+        imgur.setAccountUsername(tokens.account_username);
+        imgur.setAuthorizationToken(tokens.access_token);
+        imgur.setRefreshToken(tokens.refresh_token);
+    }
+}
+
+/**
+ * Removes the data from local storage effectively logging out the user.
+ */
+function resetTokens() {
+    window.localStorage.removeItem("tokens");
+}
+
+/**
  * Utility function to parse OAuth authorization token out of a URL.
  */
 function parseTokens(url) {
+    url = url.split("?")[1];
     url = url.replace('#', '&'); // <-- fix for imgur oauth thing.
     var result = {};
 
@@ -299,7 +359,20 @@ function parseTokens(url) {
     return result;
 }
 
-    /**
+/**
+ * This function could have a better name but I can't think of one. This is used to replace the #status_msg with a
+ * friendly reminder if you're logged in or not.
+ */
+function checkIfLoggedIn() {
+    if (checkIfAppIsAuthorized()) {
+        loadTokens();
+        document.querySelector("#status_msg").innerHTML = "Authorized as " + imgur.config.username;
+    } else {
+        document.querySelector("#status_msg").innerHTML = "Click the button on the top right corner to authorize your user on imgur.com. if you don't authorize your user then you will only be able to upload anonymously.";
+    }
+}
+
+/**
  * Below is the initialization code for the app. It basically binds some buttons to their respective functions
  */
 
@@ -314,6 +387,7 @@ document.querySelector("#upload_user").addEventListener("click", uploadCurrentIm
 // Succesful upload screen events
 document.querySelector("#back-from-authorize").addEventListener("click", function() {
     console.log("Clicked the back button");
+    checkIfLoggedIn();
     document.querySelector('#browser').className = 'right';
     document.querySelector('[data-position="current"]').className = 'current';
 });
@@ -335,12 +409,8 @@ document.querySelector("#email").addEventListener("click", sendLinkByEmail);
 document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
 
 
-if (checkIfAppIsAuthorized()) {
-    var username = window.localStorage.getItem("account_username");
-    document.querySelector("#status_msg").innerHTML = "Authorized as " + username;
-}
+checkIfLoggedIn();
 
 console.log("application loaded");
-
 
 }());
