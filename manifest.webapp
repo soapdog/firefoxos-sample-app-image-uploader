@@ -1,8 +1,9 @@
 {
   "name": "Imgur Image Uploader",
-  "description": "An app to share images using the imgur service",
+  "description": "An app to share images using the imgur service. It can upload anonymously or on behalf of your user.",
   "launch_path": "/index.html",
   "type": "privileged",
+  "version": "2.1",
   "activities": {
       "share": {
             "href": "./index.html",
@@ -12,11 +13,6 @@
             },
             "returnValue": true
           }
-  },
-  "permissions": {
-      "desktop-notification": {
-          "description" : "To show notifications"
-      }
   },
   "icons": {
     "128": "/icons/logo_128.png",
@@ -29,10 +25,10 @@
   "default_locale": "en",
   "permissions": {
       "systemXHR": {
-        "description": "Used to send data to Foursquare API."
+        "description": "Used to send data to Imgur API."
       },
       "browser": {
-        "description": "Enables authentication to Foursquare via OAuth."
+        "description": "Enables authentication to Imgur via OAuth."
       }
     }
 

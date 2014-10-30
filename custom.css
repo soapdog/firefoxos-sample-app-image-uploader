@@ -193,12 +193,15 @@ div[role="slider"] > label.icon {
 #image-presenter img {
     max-height: 300px;
     width: auto;
+    max-width: 100%;
+    margin: auto;
 }
 
 #image-presenter {
     margin: auto;
     vertical-align: middle;
-    padding: 10px;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 #browser {

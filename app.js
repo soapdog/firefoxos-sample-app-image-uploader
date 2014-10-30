@@ -52,13 +52,7 @@ function pickImage() {
         imagePresenter.innerHTML = "";
         imagePresenter.appendChild(img);
 
-        // Check connection before upload.
-        var connection = window.navigator.mozConnection;
-
-        if (connection.bandwidth === 0) {
-            alert("Please connect to the internet to upload images to imgur.com");
-            return;
-        }
+       
 
         document.querySelector("#upload").classList.remove("hidden");
 
@@ -365,9 +359,11 @@ function parseTokens(url) {
  */
 function checkIfLoggedIn() {
     if (checkIfAppIsAuthorized()) {
+        console.log("User is authorized, loading tokens...");
         loadTokens();
         document.querySelector("#status_msg").innerHTML = "Authorized as " + imgur.config.username;
     } else {
+        console.log("User is not authorized.")
         document.querySelector("#status_msg").innerHTML = "Click the button on the top right corner to authorize your user on imgur.com. if you don't authorize your user then you will only be able to upload anonymously.";
     }
 }
