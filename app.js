@@ -18,6 +18,7 @@
  */
 
 var currentImage;
+var webActivity = false;
 
 /**
  * This function is called by the "Pick Image" button in the main screen.
@@ -52,7 +53,7 @@ function pickImage() {
         imagePresenter.innerHTML = "";
         imagePresenter.appendChild(img);
 
-       
+
 
         document.querySelector("#upload").classList.remove("hidden");
 
@@ -214,6 +215,8 @@ function sendLinkByEmail() {
  */
 navigator.mozSetMessageHandler('activity', function(activityRequest) {
 
+    webActivity = activityRequest;
+
     var img = document.createElement("img");
     currentImage = activityRequest.source.data.blobs[0];
 
@@ -223,18 +226,31 @@ navigator.mozSetMessageHandler('activity', function(activityRequest) {
     var imagePresenter = document.querySelector("#image-presenter");
     imagePresenter.appendChild(img);
 
-    document.querySelector("#pick").classList.add("hidden");
     document.querySelector("#upload").classList.remove("hidden");
+    document.querySelector("#cancel_web_activity").classList.remove("hidden");
+    document.querySelector("#return_web_activity").classList.remove("hidden");
+
+
+
     if (checkIfAppIsAuthorized()) {
-        var username = window.localStorage.getItem("account_username");
+        var username = imgur.config.username;
         console.log("Changing label to " + username);
         document.querySelector("#username").innerHTML = username;
         document.querySelector("#upload_user").classList.remove("hidden");
     }
 
 
-
 });
+
+function cancelWebActivity() {
+  console.log("Canceling web activity");
+  webActivity.postError("User cancelled image sharing");
+}
+
+function returnWebActivity() {
+  console.log("Returning web activity");
+  webActivity.postResult("Image posted!");
+}
 
 /**
  * This is the function that requests authorization for the app to post
@@ -377,6 +393,9 @@ function checkIfLoggedIn() {
 document.querySelector("#pick").addEventListener("click", pickImage);
 document.querySelector("#upload").addEventListener("click", uploadCurrentImageToImgur);
 document.querySelector("#upload_user").addEventListener("click", uploadCurrentImageToImgurAsTheAuthorizedUser);
+document.querySelector("#cancel_web_activity").addEventListener("click", cancelWebActivity);
+document.querySelector("#return_web_activity").addEventListener("click", returnWebActivity);
+
 
 
 

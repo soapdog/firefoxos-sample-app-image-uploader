@@ -208,3 +208,7 @@ div[role="slider"] > label.icon {
     width: 320px;
     height: 100%;
 }
+
+.hidden {
+  display: none !important;
+}
