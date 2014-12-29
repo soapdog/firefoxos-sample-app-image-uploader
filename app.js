@@ -89,7 +89,7 @@ function uploadCurrentImageToImgur() {
     document.querySelector("#upload_user").classList.add("hidden");
     document.querySelector("#pick").classList.add("hidden");
     document.querySelector("#uploading").classList.remove("hidden");
-    imgur.share(currentImage, true, shareCallback);
+    imgur.share(currentImage, true, shareCallback, progressCallback);
 }
 
 /**
@@ -111,7 +111,7 @@ function uploadCurrentImageToImgurAsTheAuthorizedUser() {
 
     function shareClosure(err, tokens) {
         saveTokens(tokens);
-        imgur.share(currentImage, false, shareCallback);
+        imgur.share(currentImage, false, shareCallback, progressCallback);
     }
 
     imgur.refreshAccessToken(shareClosure);
@@ -155,6 +155,10 @@ function shareCallback(err, response) {
 
 }
 
+function progressCallback(progress){
+	document.querySelector("#uploading span").textContent= 'Uploading ' + progress + '%';
+}
+
 /**
  * Below are some functions related to calling web activities. These are triggered by buttons
  * that are displayed when a succesful upload is achieved.
@@ -193,17 +197,17 @@ function saveLinkToBookmarks() {
     });
 }
 
-function sendLinkByEmail() {
+function shareImage() {
     var link = document.querySelector("#link").innerHTML;
     var activity = new MozActivity({
-        name: "new",
+        name: "share",
         data: {
-            type: "email",
-            url: "mailto:?body=" + encodeURIComponent(link) + "&subject=" + encodeURIComponent(link)
+            type: "url",
+            url: link
         }
     });
     activity.onerror = function() {
-        alert("could not send email");
+        alert("could not share Images");
     };
 }
 
@@ -379,7 +383,7 @@ function checkIfLoggedIn() {
         loadTokens();
         document.querySelector("#status_msg").innerHTML = "Authorized as " + imgur.config.username;
     } else {
-        console.log("User is not authorized.")
+        console.log("User is not authorized.");
         document.querySelector("#status_msg").innerHTML = "Click the button on the top right corner to authorize your user on imgur.com. if you don't authorize your user then you will only be able to upload anonymously.";
     }
 }
@@ -420,7 +424,7 @@ document.querySelector("#authorize-button").addEventListener("click", requestAut
 
 
 document.querySelector("#open").addEventListener("click", openLink);
-document.querySelector("#email").addEventListener("click", sendLinkByEmail);
+document.querySelector("#email").addEventListener("click", shareImage);
 document.querySelector("#bookmark").addEventListener("click", saveLinkToBookmarks);
 
 
