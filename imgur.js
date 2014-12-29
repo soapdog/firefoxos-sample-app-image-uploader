@@ -41,7 +41,7 @@ imgur.setAccountUsername = function(username) {
  *
  *   http://api.imgur.com/
  */
-imgur.share = function(file, anonymously, inCallback) {
+imgur.share = function(file, anonymously, inCallback, progressCallback) {
 
     var fd = new FormData();
     fd.append("image", file); // Append the file
@@ -71,6 +71,11 @@ imgur.share = function(file, anonymously, inCallback) {
             inCallback(response, null);
         }
     }
+	xhr.upload.onprogress= function(e){
+		var percentComplete = Math.round((e.loaded / e.total) * 100);
+		if(progressCallback)
+			progressCallback(percentComplete);
+	}
     xhr.send(fd);
 }
 
